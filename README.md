@@ -1,1 +1,1 @@
-# lab_2
+### Parallel algorithms in C++
