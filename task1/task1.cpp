@@ -1,6 +1,7 @@
 ﻿#include <iostream>
 #include <vector>
 #include <ctime>
+#include <chrono>
 #include <execution>
 
 void fill_vector(std::vector<int> &, int, int, int);
@@ -31,19 +32,22 @@ int main()
     return 0;
 }
 
-void fill_vector(std::vector<int> &vector, int size, int left_border, int right_border) {
+void fill_vector(std::vector<int> &vector, int size, int left_border, int right_border)
+{
     for (size_t i = 0; i < size; i++) {
         vector.push_back(rand() % right_border + left_border);
     }
 }
 
-void print_vector(std::vector<int> vector) {
+void print_vector(std::vector<int> vector)
+{
     for (size_t i = 0; i < vector.size(); i++) {
         std::cout << vector[i] << " ";
     }
 }
 
-int calculate_divisor_count(int n) {
+int calculate_divisor_count(int n)
+{
     int count = 0;
     for (int i = 1; i * i <= n; i++) {
         if (n % i == 0) {
