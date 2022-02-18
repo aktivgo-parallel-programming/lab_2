@@ -1,112 +1,93 @@
 ﻿#include <iostream>
 #include <cstdlib>
 #include <chrono>
+#include <vector>
 #include <ctime>
 #include <execution>
 
-int** create_matrix(int);
-void fill_matrix(int**, int, int, int);
-void delete_matrix(int**, int);
-void print_matrix(int**, int);
-int** multiply_matrix(int**, int**, int);
-int multiply(int, int);
-double calculate_multiply_time(int**, int**, int);
+std::vector<std::vector<int>> create_matrix(int);
+void fill_matrix(std::vector<std::vector<int>> &, int, int);
+void print_matrix(std::vector<std::vector<int>>);
+std::vector<std::vector<int>> multiply_matrix(std::vector<std::vector<int>>, std::vector<std::vector<int>>);
+double calculate_multiply_time(std::vector<std::vector<int>>, std::vector<std::vector<int>>);
 
-const int SIZE = 512;
-const int LEFT_BORDER = -1000;
-const int RIGHT_BORDER = 1000;
+const int SIZE = 4;
+const int LEFT_BORDER = 0;
+const int RIGHT_BORDER = 2;
 
 int main()
 {
     srand(time(0));
 
-    int** matrix_1 = create_matrix(SIZE);
-    int** matrix_2 = create_matrix(SIZE);
-    fill_matrix(matrix_1, SIZE, LEFT_BORDER, RIGHT_BORDER);
-    fill_matrix(matrix_2, SIZE, LEFT_BORDER, RIGHT_BORDER);
+    std::vector<std::vector<int>> matrix_1 = create_matrix(SIZE);
+    std::vector<std::vector<int>> matrix_2 = create_matrix(SIZE);
+    fill_matrix(matrix_1, LEFT_BORDER, RIGHT_BORDER);
+    fill_matrix(matrix_2,  LEFT_BORDER, RIGHT_BORDER);
 
-    /*print_matrix(matrix_1, SIZE);
+    print_matrix(matrix_1);
     std::cout << std::endl;
-    print_matrix(matrix_2, SIZE);
-    std::cout << std::endl;*/
+    print_matrix(matrix_2);
+    std::cout << std::endl;
 
-    double time = calculate_multiply_time(matrix_1, matrix_2, SIZE);
+    double time = calculate_multiply_time(matrix_1, matrix_2);
     std::cout << "Time to multiply: " << time << "s" << std::endl;
-
-    delete_matrix(matrix_1, SIZE);
-    delete_matrix(matrix_2, SIZE);
 }
 
-int** create_matrix(int size)
+std::vector<std::vector<int>> create_matrix(int size)
 {
-    int** matrix = new int* [size];
+    std::vector<std::vector<int>> matrix;
     for (int i = 0; i < size; i++) {
-        matrix[i] = new int[size];
+        matrix.push_back(std::vector<int>());
     }
 
     for (int i = 0; i < size; i++) {
         for (int j = 0; j < size; j++) {
-            matrix[i][j] = 0;
+            matrix[i].push_back(0);
         }
     }
 
     return matrix;
 }
 
-void fill_matrix(int** matrix, int size, int left_border, int right_border)
+void fill_matrix(std::vector<std::vector<int>> &matrix, int left_border, int right_border)
 {
-    for (int i = 0; i < size; i++) {
-        for (int j = 0; j < size; j++) {
+    for (int i = 0; i < matrix.size(); i++) {
+        for (int j = 0; j < matrix.size(); j++) {
             matrix[i][j] = rand() % right_border - left_border;
         }
     }
 }
 
-void delete_matrix(int** matrix, int size)
+void print_matrix(std::vector<std::vector<int>> matrix)
 {
-    for (int i = 0; i < size; i++) {
-        delete[] matrix[i];
-    }
-}
-
-void print_matrix(int** matrix, int size)
-{
-    for (int i = 0; i < size; i++) {
-        for (int j = 0; j < size; j++) {
+    for (int i = 0; i < matrix.size(); i++) {
+        for (int j = 0; j < matrix.size(); j++) {
             std::cout << matrix[i][j] << " ";
         }
         std::cout << std::endl;
     }
 }
 
-int** multiply_matrix(int** matrix_1, int** matrix_2, int size)
+std::vector<std::vector<int>> multiply_matrix(std::vector<std::vector<int>> matrix_1, std::vector<std::vector<int>> matrix_2)
 {
-    int** result = create_matrix(size);
+    int size = matrix_1.size();
+    std::vector<std::vector<int>> result = create_matrix(size);
     for (int i = 0; i < size; i++) {
         for (int j = 0; j < size; j++) {
-            std::vector <int> m1;
-            std::vector <int> m2;
-            for(int k = 0; k < size; k++) {
-                m1.push_back(matrix_1[i][k]);
-                m2.push_back(matrix_2[k][j]);
-            }
-            std::vector <int> r(size);
-            result[i][j] = std::transform_reduce(std::execution::seq, m1.begin(), m1.end(), m2.begin(), multiply);
+            result[i][j] = std::transform_reduce(std::execution::par, matrix_1[i].begin(), matrix_1[i].end(), matrix_2[j].begin(), 0);
         }
     }
 
     return result;
 }
 
-int multiply(int n) {
-    return n * m;
-}
-
-double calculate_multiply_time(int** matrix_1, int** matrix_2, int size)
+double calculate_multiply_time(std::vector<std::vector<int>> matrix_1, std::vector<std::vector<int>> matrix_2)
 {
     std::chrono::time_point<std::chrono::high_resolution_clock> start, end;
     start = std::chrono::high_resolution_clock::now();
-    int** result = multiply_matrix(matrix_1, matrix_2, SIZE);
+    std::vector<std::vector<int>> result = multiply_matrix(matrix_1, matrix_2);
+    print_matrix(result);
+    std::cout << std::endl;
     end = std::chrono::high_resolution_clock::now();
     std::chrono::duration<double> diff = end - start;
     return diff.count();
