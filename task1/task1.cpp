@@ -11,7 +11,7 @@ double calculate_search_divisor_count_time(std::vector<int>, std::vector<int> &)
 
 const int SIZE = 2000000;
 const int LEFT_BORDER = 100000;
-const int RIGHT_BORDER = 1000000;
+const int RIGHT_BORDER = 1000000 + 1;
 
 int main()
 {
@@ -25,7 +25,7 @@ int main()
 
     std::vector<int> result(vector.size());
     double time = calculate_search_divisor_count_time(vector, result);
-    std::cout << "Time to search divisor count: " << time << "s" << std::endl;
+    std::cout << "Time to search divisors count: " << time << "s" << std::endl;
 
     //print_vector(result);
 
@@ -41,8 +41,8 @@ void fill_vector(std::vector<int> &vector, int size, int left_border, int right_
 
 void print_vector(std::vector<int> vector)
 {
-    for (size_t i = 0; i < vector.size(); i++) {
-        std::cout << vector[i] << " ";
+    for (int i : vector) {
+        std::cout << i << " ";
     }
 }
 

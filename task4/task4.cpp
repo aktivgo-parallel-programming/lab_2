@@ -7,16 +7,16 @@
 #include <algorithm>
 
 std::vector<double> create_random_vector(int, int, int);
-void print_vector(std::vector<double>);
+void print_vector(const std::vector<double>&);
 double calculate_sort_time(std::vector<double>);
 
-const int SIZE = 1000000000;
-const double LEFT_BORDER = 0.1;
-const double RIGHT_BORDER = 10.1;
+const int SIZE = 500000000;
+const int LEFT_BORDER = 0;
+const int RIGHT_BORDER = 1000;
 
 int main()
 {
-	srand(time(0));
+	srand(time(nullptr));
 
 	std::vector<double> vector = create_random_vector(SIZE, LEFT_BORDER, RIGHT_BORDER);
 
@@ -27,20 +27,27 @@ int main()
 	std::cout << "Time to sort: " << time << "s" << std::endl;
 }
 
+double get_random_number(int min, int max)
+{
+    static const double fraction = 1.0 / (static_cast<double>(RAND_MAX) + 1.0);
+    return static_cast<double>(rand() * fraction * (max - min + 1) + min);
+}
+
 std::vector<double> create_random_vector(int size, int left_border, int right_border)
 {
 	std::vector<double> result;
-	for (int i = 0; i < size; i++) {
-		result.push_back(rand() % right_border + left_border);
+	result.reserve(size);
+    for (int i = 0; i < size; i++) {
+		result.push_back(get_random_number(left_border, right_border));
 	}
 
 	return result;
 }
 
-void print_vector(std::vector<double> vector)
+void print_vector(const std::vector<double>& vector)
 {
-	for (int i = 0; i < vector.size(); i++) {
-		std::cout << vector[i] << " ";
+	for (double i : vector) {
+		std::cout << i << " ";
 	}
 }
 
@@ -48,7 +55,7 @@ double calculate_sort_time(std::vector<double> vector)
 {
 	std::chrono::time_point<std::chrono::high_resolution_clock> start, end;
 	start = std::chrono::high_resolution_clock::now();
-	std::sort(std::execution::par, vector.begin(), vector.end());
+	std::sort(std::execution::par_unseq, vector.begin(), vector.end());
 	end = std::chrono::high_resolution_clock::now();
 	std::chrono::duration<double> diff = end - start;
 	/*print_vector(vector);
