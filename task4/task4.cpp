@@ -6,25 +6,28 @@
 #include <execution>
 #include <algorithm>
 
-std::vector<double> create_random_vector(int, int, int);
-void print_vector(const std::vector<double>&);
-double calculate_sort_time(std::vector<double>);
+double* create_random_array(int, int, int);
+void print_array(double*, int);
+double calculate_sort_time(double*, int);
 
-const int SIZE = 500000000;
+const int SIZE = 1000000;
 const int LEFT_BORDER = 0;
-const int RIGHT_BORDER = 1000;
+const int RIGHT_BORDER = 1000 + 1;
 
 int main()
 {
 	srand(time(nullptr));
 
-	std::vector<double> vector = create_random_vector(SIZE, LEFT_BORDER, RIGHT_BORDER);
+	double* array = create_random_array(SIZE, LEFT_BORDER, RIGHT_BORDER);
 
-	/*print_vector(vector);
+    /*print_array(array, SIZE);
 	std::cout << std::endl;*/
 
-	double time = calculate_sort_time(vector);
+	double time = calculate_sort_time(array, SIZE);
 	std::cout << "Time to sort: " << time << "s" << std::endl;
+
+    /*print_array(array, SIZE);
+    std::cout << std::endl;*/
 }
 
 double get_random_number(int min, int max)
@@ -33,32 +36,33 @@ double get_random_number(int min, int max)
     return static_cast<double>(rand() * fraction * (max - min + 1) + min);
 }
 
-std::vector<double> create_random_vector(int size, int left_border, int right_border)
+double* create_random_array(int size, int left_border, int right_border)
 {
-	std::vector<double> result;
-	result.reserve(size);
+	auto *result = new double[size];
     for (int i = 0; i < size; i++) {
-		result.push_back(get_random_number(left_border, right_border));
+		result[i] = get_random_number(left_border, right_border);
+
 	}
 
 	return result;
 }
 
-void print_vector(const std::vector<double>& vector)
+void print_array(double* array, int size)
 {
-	for (double i : vector) {
-		std::cout << i << " ";
+	for (int i = 0; i < size; i++) {
+		std::cout << array[i] << " ";
 	}
 }
 
-double calculate_sort_time(std::vector<double> vector)
+double calculate_sort_time(double* array, int size)
 {
 	std::chrono::time_point<std::chrono::high_resolution_clock> start, end;
 	start = std::chrono::high_resolution_clock::now();
-	std::sort(std::execution::par_unseq, vector.begin(), vector.end());
+
+	std::sort(std::execution::seq, array, array + size);
+
 	end = std::chrono::high_resolution_clock::now();
 	std::chrono::duration<double> diff = end - start;
-	/*print_vector(vector);
-	std::cout << std::endl;*/
+
 	return diff.count();
 }

@@ -11,7 +11,7 @@ double calculate_sum_time(std::vector<int>, long long &);
 
 const long SIZE = 2000000000;
 const int LEFT_BORDER = 0;
-const int RIGHT_BORDER = 2;
+const int RIGHT_BORDER = 1 + 1;
 
 int main()
 {
@@ -27,7 +27,7 @@ int main()
     double time = calculate_sum_time(vector, result);
     std::cout << "Time to sum vector: " << time << "s" << std::endl;
 
-    std::cout << "Result: " << result << std::endl;
+    /*std::cout << "Result: " << result << std::endl;*/
 
     return 0;
 }
@@ -50,8 +50,11 @@ double calculate_sum_time(std::vector<int> vector, long long &result)
 {
     std::chrono::time_point<std::chrono::high_resolution_clock> start, end;
     start = std::chrono::high_resolution_clock::now();
-    result = std::reduce(std::execution::par_unseq, vector.begin(), vector.end());
+
+    result = std::reduce(std::execution::seq, vector.begin(), vector.end());
+
     end = std::chrono::high_resolution_clock::now();
     std::chrono::duration<double> diff = end - start;
+
     return diff.count();
 }

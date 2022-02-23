@@ -27,7 +27,7 @@ int main()
     double time = calculate_search_divisor_count_time(vector, result);
     std::cout << "Time to search divisors count: " << time << "s" << std::endl;
 
-    //print_vector(result);
+    /*print_vector(result);*/
 
     return 0;
 }
@@ -65,8 +65,11 @@ double calculate_search_divisor_count_time(std::vector<int> vector, std::vector<
 {
     std::chrono::time_point<std::chrono::high_resolution_clock> start, end;
     start = std::chrono::high_resolution_clock::now();
-    std::transform(std::execution::par_unseq, vector.begin(), vector.end(), result.begin(), calculate_divisor_count);
+
+    std::transform(std::execution::seq, vector.begin(), vector.end(), result.begin(), calculate_divisor_count);
+    
     end = std::chrono::high_resolution_clock::now();
     std::chrono::duration<double> diff = end - start;
+
     return diff.count();
 }

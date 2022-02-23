@@ -15,7 +15,7 @@ double calculate_multiply_time(std::vector<std::vector<int>>, std::vector<std::v
 
 const int SIZE = 2;
 const int LEFT_BORDER = 0;
-const int RIGHT_BORDER = 3;
+const int RIGHT_BORDER = 2 + 1;
 
 int main()
 {
@@ -77,7 +77,7 @@ std::vector<std::vector<int>> multiply_matrix(std::vector<std::vector<int>> matr
     std::vector<std::vector<int>> result = create_matrix(size);
     for (int i = 0; i < size; i++) {
         for (int j = 0; j < size; j++) {
-            result[j][i] = std::transform_reduce(std::execution::par, matrix_1[i].begin(), matrix_1[i].end(), matrix_2[j].begin(), 0);
+            result[j][i] = std::transform_reduce(std::execution::seq, matrix_1[i].begin(), matrix_1[i].end(), matrix_2[j].begin(), 0);
         }
     }
 
@@ -100,10 +100,14 @@ double calculate_multiply_time(std::vector<std::vector<int>> matrix_1, std::vect
 {
     std::chrono::time_point<std::chrono::high_resolution_clock> start, end;
     start = std::chrono::high_resolution_clock::now();
+
     std::vector<std::vector<int>> result = multiply_matrix(std::move(matrix_1), std::move(matrix_2));
-    print_matrix(result);
-    std::cout << std::endl;
+   
     end = std::chrono::high_resolution_clock::now();
     std::chrono::duration<double> diff = end - start;
+
+    print_matrix(result);
+    std::cout << std::endl;
+
     return diff.count();
 }
