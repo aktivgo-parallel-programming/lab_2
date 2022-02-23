@@ -6,16 +6,16 @@
 #include <algorithm>
 
 void fill_vector(std::vector<int>&, int, int, int);
-void print_vector(std::vector<int>);
+void print_vector(const std::vector<int>&);
 double calculate_sum_time(std::vector<int>, long long &);
 
-const long SIZE = 2000000000;
+const long SIZE = 500000000;
 const int LEFT_BORDER = 0;
 const int RIGHT_BORDER = 1 + 1;
 
 int main()
 {
-    srand(time(0));
+    srand(time(nullptr));
 
     std::vector<int> vector;
     fill_vector(vector, SIZE, LEFT_BORDER, RIGHT_BORDER);
@@ -39,7 +39,7 @@ void fill_vector(std::vector<int>& vector, int size, int left_border, int right_
     }
 }
 
-void print_vector(std::vector<int> vector)
+void print_vector(const std::vector<int>& vector)
 {
     for (int i : vector) {
         std::cout << i << " ";

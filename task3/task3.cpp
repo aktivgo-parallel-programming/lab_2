@@ -1,7 +1,6 @@
 ﻿#include <iostream>
 #include <cstdlib>
 #include <chrono>
-#include <utility>
 #include <vector>
 #include <ctime>
 #include <execution>
@@ -9,17 +8,17 @@
 std::vector<std::vector<int>> create_matrix(int);
 void fill_matrix(std::vector<std::vector<int>>&, int, int);
 void print_matrix(std::vector<std::vector<int>>&);
-std::vector<std::vector<int>> multiply_matrix(std::vector<std::vector<int>>, std::vector<std::vector<int>>);
 void transposition(std::vector<std::vector<int>>&);
+std::vector<std::vector<int>> multiply_matrix(std::vector<std::vector<int>>, std::vector<std::vector<int>>);
 double calculate_multiply_time(std::vector<std::vector<int>>, std::vector<std::vector<int>>);
 
 const int SIZE = 2;
 const int LEFT_BORDER = 0;
-const int RIGHT_BORDER = 2 + 1;
+const int RIGHT_BORDER = 3;
 
 int main()
 {
-    srand(time(0));
+    srand(time(nullptr));
 
     std::vector<std::vector<int>> matrix_1 = create_matrix(SIZE);
     std::vector<std::vector<int>> matrix_2 = create_matrix(SIZE);
@@ -30,6 +29,8 @@ int main()
     std::cout << std::endl;
     print_matrix(matrix_2);
     std::cout << std::endl;
+
+    transposition(matrix_2); // Транспонирование матрицы B для корректной работы transform_reduce
 
     double time = calculate_multiply_time(matrix_1, matrix_2);
     std::cout << "Time to multiply: " << time << "s" << std::endl;
@@ -71,26 +72,7 @@ void print_matrix(std::vector<std::vector<int>> &matrix)
     }
 }
 
-std::vector<std::vector<int>> multiply_matrix(std::vector<std::vector<int>> matrix_1, std::vector<std::vector<int>> matrix_2)
-{
-    std::vector<std::vector<int>> result;
-    int size = matrix_1.size();
-    for (int i = 0; i < size; i++) {
-        result.emplace_back();
-        for (int j = 0; j < size; j++) {
-            result[i].push_back(std::transform_reduce(std::execution::seq, matrix_1[i].begin(), matrix_1[i].end(), matrix_2[j].begin(), 0));
-        }
-    }
-
-    print_matrix(result);
-    std::cout << std::endl;
-
-    transposition(result);
-
-    return result;
-}
-
-void transposition(std::vector<std::vector<int>> &matrix)
+void transposition(std::vector<std::vector<int>>& matrix)
 {
     for (int i = 0; i < matrix.size(); i++) {
         for (int j = i; j < matrix[i].size(); j++) {
@@ -99,6 +81,23 @@ void transposition(std::vector<std::vector<int>> &matrix)
             matrix[j][i] = t;
         }
     }
+}
+
+std::vector<std::vector<int>> multiply_matrix(std::vector<std::vector<int>> matrix_1, std::vector<std::vector<int>> matrix_2)
+{
+    int size = matrix_1.size();
+    std::vector<std::vector<int>> result(size, std::vector<int>(size));
+    for (int i = 0; i < size; i++) {
+        for (int j = 0; j < size; j++) {
+            /*
+             * Cкалярное произведение векторов matrix_1[i] и matrix_2[j]
+             * Результат записывается в [i][j] ячейку результирующей матрицы
+             */
+            result[i][j] = std::transform_reduce(std::execution::seq, matrix_1[i].begin(), matrix_1[i].end(), matrix_2[j].begin(), 0);
+        }
+    }
+
+    return result;
 }
 
 double calculate_multiply_time(std::vector<std::vector<int>> matrix_1, std::vector<std::vector<int>> matrix_2)

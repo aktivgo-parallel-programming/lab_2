@@ -41,7 +41,6 @@ double* create_random_array(int size, int left_border, int right_border)
 	auto *result = new double[size];
     for (int i = 0; i < size; i++) {
 		result[i] = get_random_number(left_border, right_border);
-
 	}
 
 	return result;

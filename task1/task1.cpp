@@ -5,17 +5,17 @@
 #include <execution>
 
 void fill_vector(std::vector<int> &, int, int, int);
-void print_vector(std::vector<int>);
+void print_vector(const std::vector<int>&);
 int calculate_divisor_count(int);
 double calculate_search_divisor_count_time(std::vector<int>, std::vector<int> &);
 
-const int SIZE = 2000000;
+const int SIZE = 500000;
 const int LEFT_BORDER = 100000;
 const int RIGHT_BORDER = 1000000 + 1;
 
 int main()
 {
-    srand(time(0));
+    srand(time(nullptr));
 
     std::vector<int> vector;
     fill_vector(vector, SIZE, LEFT_BORDER, RIGHT_BORDER);
@@ -39,7 +39,7 @@ void fill_vector(std::vector<int> &vector, int size, int left_border, int right_
     }
 }
 
-void print_vector(std::vector<int> vector)
+void print_vector(const std::vector<int>& vector)
 {
     for (int i : vector) {
         std::cout << i << " ";
