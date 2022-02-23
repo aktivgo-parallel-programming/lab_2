@@ -7,10 +7,10 @@
 #include <execution>
 
 std::vector<std::vector<int>> create_matrix(int);
-void fill_matrix(std::vector<std::vector<int>> &, int, int);
-void print_matrix(std::vector<std::vector<int>>);
+void fill_matrix(std::vector<std::vector<int>>&, int, int);
+void print_matrix(std::vector<std::vector<int>>&);
 std::vector<std::vector<int>> multiply_matrix(std::vector<std::vector<int>>, std::vector<std::vector<int>>);
-void transposition(std::vector<std::vector<int>> &);
+void transposition(std::vector<std::vector<int>>&);
 double calculate_multiply_time(std::vector<std::vector<int>>, std::vector<std::vector<int>>);
 
 const int SIZE = 2;
@@ -61,7 +61,7 @@ void fill_matrix(std::vector<std::vector<int>> &matrix, int left_border, int rig
     }
 }
 
-void print_matrix(std::vector<std::vector<int>> matrix)
+void print_matrix(std::vector<std::vector<int>> &matrix)
 {
     for (int i = 0; i < matrix.size(); i++) {
         for (int j = 0; j < matrix.size(); j++) {
@@ -73,15 +73,20 @@ void print_matrix(std::vector<std::vector<int>> matrix)
 
 std::vector<std::vector<int>> multiply_matrix(std::vector<std::vector<int>> matrix_1, std::vector<std::vector<int>> matrix_2)
 {
+    std::vector<std::vector<int>> result;
     int size = matrix_1.size();
-    std::vector<std::vector<int>> result = create_matrix(size);
     for (int i = 0; i < size; i++) {
+        result.emplace_back();
         for (int j = 0; j < size; j++) {
-            result[j][i] = std::transform_reduce(std::execution::seq, matrix_1[i].begin(), matrix_1[i].end(), matrix_2[j].begin(), 0);
+            result[i].push_back(std::transform_reduce(std::execution::seq, matrix_1[i].begin(), matrix_1[i].end(), matrix_2[j].begin(), 0));
         }
     }
 
+    print_matrix(result);
+    std::cout << std::endl;
+
     transposition(result);
+
     return result;
 }
 
@@ -101,7 +106,7 @@ double calculate_multiply_time(std::vector<std::vector<int>> matrix_1, std::vect
     std::chrono::time_point<std::chrono::high_resolution_clock> start, end;
     start = std::chrono::high_resolution_clock::now();
 
-    std::vector<std::vector<int>> result = multiply_matrix(std::move(matrix_1), std::move(matrix_2));
+    std::vector<std::vector<int>> result = multiply_matrix(matrix_1, matrix_2);
    
     end = std::chrono::high_resolution_clock::now();
     std::chrono::duration<double> diff = end - start;
