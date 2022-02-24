@@ -2,7 +2,6 @@
 #include <cstdlib>
 #include <chrono>
 #include <ctime>
-#include <vector>
 #include <execution>
 #include <algorithm>
 

@@ -7,9 +7,9 @@
 
 void fill_vector(std::vector<int>&, int, int, int);
 void print_vector(const std::vector<int>&);
-double calculate_sum_time(std::vector<int>, long long &);
+double calculate_sum_time(std::vector<int>, int &);
 
-const long SIZE = 500000000;
+const int SIZE = 10;
 const int LEFT_BORDER = 0;
 const int RIGHT_BORDER = 1 + 1;
 
@@ -20,14 +20,14 @@ int main()
     std::vector<int> vector;
     fill_vector(vector, SIZE, LEFT_BORDER, RIGHT_BORDER);
 
-    /*print_vector(vector);
-    std::cout << std::endl;*/
+    print_vector(vector);
+    std::cout << std::endl;
 
-    long long result = 0;
+    int result = 0;
     double time = calculate_sum_time(vector, result);
     std::cout << "Time to sum vector: " << time << "s" << std::endl;
 
-    /*std::cout << "Result: " << result << std::endl;*/
+    std::cout << "Result: " << result << std::endl;
 
     return 0;
 }
@@ -46,7 +46,7 @@ void print_vector(const std::vector<int>& vector)
     }
 }
 
-double calculate_sum_time(std::vector<int> vector, long long &result)
+double calculate_sum_time(std::vector<int> vector, int &result)
 {
     std::chrono::time_point<std::chrono::high_resolution_clock> start, end;
     start = std::chrono::high_resolution_clock::now();
